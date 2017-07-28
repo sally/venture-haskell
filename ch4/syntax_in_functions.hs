@@ -202,3 +202,26 @@ can use semicolons to bind several variables inline
 useful for quickly dismantling a tuple into components and binding to names and such
 -}
 (let (a,b,c) = (1,2,3) in a+b+c) * 100 -- returns 600
+{-
+can also put "let" bindings inside list comprehensions
+-}
+calcBmis :: (RealFloat a) => [(a, a)] -> [a]
+calcBmis xs = [bmi | (w, h) <- xs, let bmi = w / h ^ 2]
+{-
+note that we use "let" inside list comprehension much like we would a predicate, only it doesn't filter the list - it only binds to names.
+
+the names defined in a "let" in a list comprehension are visible to the output function (the prat before the |) and all predicates and sections that come *after* of the binding
+
+so this would work:
+-}
+calcBmis :: (RealFloat a) => [(a, a)] -> [a]
+calcBmis xs = [bmi | (w, h) <- xs, let bmi = w / h ^ 2, bmi >= 25.0]
+{-
+we can't use the variable 'bmi' in (w,h) <- xs part, because it's define *prior* let binding
+-}
+
+{-
+for further reading on 'let' scope vs. 'where' scope,
+case expressions,
+see: http://learnyouahaskell.com/syntax-in-functions
+-}
